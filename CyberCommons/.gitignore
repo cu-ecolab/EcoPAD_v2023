@@ -1,7 +1,6 @@
 # secrets files
 *secrets*
-#db.sqlite3
-dc_config/cybercom_config.env
+db.sqlite3
 
 # django's web static files
 web/static/admin/*

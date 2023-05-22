@@ -1,25 +1,14 @@
 version: "3.7"
 services:
-  local_fortran_example:
-    image: local_fortran_example
-    volumes:
-      - ./web/data:/data
-    build:
-        context: dc_config/images/local_fortran_example
-        args: 
-          - CELERY_SSH_USER
-    env_file:
-      - dc_config/cybercom_config.env
-      - dc_config/secrets.env
-
   cybercom_nginx:
     image: nginx:${NGINX_VERSION}
+    init: true
     restart: unless-stopped
     expose:
       - 80
       - 443
     ports:
-      - 80:80
+      - ${GITPOD_PORT:-80}:80
       - 443:443
     depends_on:
       - cybercom_api
@@ -79,7 +68,6 @@ services:
     depends_on:
       - cybercom_mongo
       - cybercom_rabbitmq
-      - local_fortran_example
   cybercom_api:
     deploy:
       resources:
@@ -98,6 +86,11 @@ services:
     env_file:
       - dc_config/cybercom_config.env
       - dc_config/secrets.env
+    environment:
+      - GITPOD_WORKSPACE_ID
+      - GITPOD_WORKSPACE_CLUSTER_HOST
+      - GITPOD_PORT
+      - ALLOWED_HOSTS
     volumes:
       - ./dc_config/ssl/backend:/ssl
       - ./db.sqlite3:/app/db.sqlite3
