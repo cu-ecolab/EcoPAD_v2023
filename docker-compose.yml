@@ -3,7 +3,7 @@ services:
   local_fortran_example:
     image: local_fortran_example
     volumes:
-      - ./CyberCommons/web/data:/data
+      - ./web/data:/data
     build:
         context: local_fortran_example
         args: 
@@ -32,6 +32,7 @@ services:
       - ./CyberCommons/dc_config/ssl/nginx/letsencrypt/etc/live/${NGINX_HOST}/privkey.pem:/etc/letsencrypt/live/${NGINX_HOST}/privkey.pem
     env_file:
       - CyberCommons/dc_config/cybercom_config.env
+
   cybercom_mongo:
     image: mongo:${MONGO_VERSION}
     command: --tlsMode requireTLS --tlsCertificateKeyFile /ssl/server/mongodb.pem --tlsCAFile /ssl/testca/cacert.pem --auth
@@ -89,7 +90,7 @@ services:
     restart: unless-stopped
     user: "${UID}:${GID}"
     build:
-      context: .
+      context: CyberCommons # Jian: set the folder path for the Dockerfile of CyberCommon.
       args:
         UNAME: apiuser
         UID: "${UID}"
