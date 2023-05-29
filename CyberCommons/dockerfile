@@ -11,7 +11,20 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 PYTHONUNBUFFERED=1
 WORKDIR /
 COPY requirements.txt ./
 RUN python -m pip install --no-cache-dir --upgrade pip \
-  && python -m pip install --no-cache-dir -r requirements.txt \
+  && python -m pip install --no-cache-dir celery==5.2.2 \
+  && python -m pip install --no-cache-dir Django==3.2.12 \
+  && python -m pip install --no-cache-dir django-settings-export==1.2.1 \
+  && python -m pip install --no-cache-dir djangorestframework==3.13.1 \
+  && python -m pip install --no-cache-dir djangorestframework-jsonp==1.0.2 \
+  && python -m pip install --no-cache-dir djangorestframework-simplejwt==5.0.0 \
+  && python -m pip install --no-cache-dir djangorestframework-xml==2.0.0 \
+  && python -m pip install --no-cache-dir djangorestframework-yaml==2.0.0 \
+  && python -m pip install --no-cache-dir PyJWT==2.3.0 \
+  && python -m pip install --no-cache-dir pymongo==3.12.3 \
+  && python -m pip install --no-cache-dir python-memcached==1.59 \
+  && python -m pip install --no-cache-dir pytz==2021.3 \
+  && python -m pip install --no-cache-dir PyYAML==6.0 \
+  && python -m pip install --no-cache-dir gunicorn==20.1.0 \
   && rm requirements.txt
 
 COPY . /app
