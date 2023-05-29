@@ -13,10 +13,11 @@ services:
     image: cybercom/openssl
     user: "${UID}:${GID}"
     command: /ssl/generate
-    build:
-      context: openssl
-      args:
-        - BASE_DOCKER_IMAGE
+    # build:
+    #   context: openssl
+    #   args:
+    #     - BASE_DOCKER_IMAGE
+    build: ./openssl
     env_file:
       - ../cybercom_config.env
       - ../secrets.env
