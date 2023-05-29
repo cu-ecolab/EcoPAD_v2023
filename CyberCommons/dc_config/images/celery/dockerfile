@@ -16,8 +16,8 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /   
 COPY requirements.txt ./  
-RUN pip install --no-cache-dir celery==5.2.2 
-RUN pip install --no-cache-dir pymongo==3.12.3
+RUN python -m pip install --no-cache-dir celery==5.2.2 
+RUN python -m pip install --no-cache-dir pymongo==3.12.3
 RUN rm requirements.txt  
 
 COPY . /app  
