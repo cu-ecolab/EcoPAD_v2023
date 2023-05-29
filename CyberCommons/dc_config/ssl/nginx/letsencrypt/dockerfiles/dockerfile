@@ -1,4 +1,5 @@
-ARG BASE_DOCKER_IMAGE=debian:buster-slim #debian:bullseye-slim
+# ARG BASE_DOCKER_IMAGE=debian:bullseye-slim
+ARG BASE_DOCKER_IMAGE=debian:buster-slim
 FROM $BASE_DOCKER_IMAGE
 RUN apt-get update \
  && apt-get install -y certbot
