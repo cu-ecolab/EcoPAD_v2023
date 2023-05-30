@@ -102,7 +102,7 @@ dbshell:
 		--password $$MONGO_PASSWORD
 
 build:
-	@$(COMPOSE) --compatibility build
+	@$(COMPOSE) --compatibility build --network=host
 
 force_build:
 	@$(COMPOSE) --compatibility build --no-cache
