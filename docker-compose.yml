@@ -1,17 +1,5 @@
 version: "3.7"
 services:
-  local_fortran_example:
-    image: local_fortran_example
-    volumes:
-      - ./CyberCommons/web/data:/data
-    build:
-        context: local_fortran_example
-        args: 
-          - CELERY_SSH_USER
-    env_file:
-      - CyberCommons/dc_config/cybercom_config.env
-      - CyberCommons/dc_config/secrets.env
-
   cybercom_nginx:
     image: nginx:${NGINX_VERSION}
     init: true
@@ -20,43 +8,47 @@ services:
       - 80
       - 443
     ports:
-      - 80:80
+      - ${GITPOD_PORT:-80}:80
       - 443:443
     depends_on:
       - cybercom_api
     volumes:
-      - ./CyberCommons/dc_config/nginx/templates/${NGINX_TEMPLATE:-default}:/etc/nginx/templates/
-      - ./CyberCommons/web:/usr/share/nginx/html
-      # - ./CyberCommons/dc_config/ssl/nginx/letsencrypt/etc/live/${NGINX_HOST}/fullchain.pem:/etc/letsencrypt/live/${NGINX_HOST}/fullchain.pem
-      - ./CyberCommons/dc_config/ssl/nginx/letsencrypt_cornell/etc/live/${NGINX_HOST}/fullchain.pem:/etc/letsencrypt/live/${NGINX_HOST}/fullchain.pem
-      - ./CyberCommons/dc_config/ssl/backend/dhparam-2048.pem:/etc/ssl/certs/dhparam-2048.pem
-      # - ./CyberCommons/dc_config/ssl/nginx/letsencrypt/etc/live/${NGINX_HOST}/privkey.pem:/etc/letsencrypt/live/${NGINX_HOST}/privkey.pem
-      - ./CyberCommons/dc_config/ssl/nginx/letsencrypt_cornell/etc/live/${NGINX_HOST}/privkey.pem:/etc/letsencrypt/live/${NGINX_HOST}/privkey.pem
+      - ./cybercommons/dc_config/nginx/templates/${NGINX_TEMPLATE:-default}:/etc/nginx/templates/
+      - ./web:/usr/share/nginx/html
+      # - ./dc_config/ssl/nginx/letsencrypt/etc/live/${NGINX_HOST}/fullchain.pem:/etc/letsencrypt/live/${NGINX_HOST}/fullchain.pem
+      - ./ecopad_rel/letsencrypt_cornell/etc/live/${NGINX_HOST}/fullchain.pem:/etc/letsencrypt/live/${NGINX_HOST}/fullchain.pem
+      - ./cybercommons/dc_config/ssl/backend/dhparam-2048.pem:/etc/ssl/certs/dhparam-2048.pem
+      # - ./dc_config/ssl/nginx/letsencrypt/etc/live/${NGINX_HOST}/privkey.pem:/etc/letsencrypt/live/${NGINX_HOST}/privkey.pem
+      - ./ecopad_rel/letsencrypt_cornell/etc/live/${NGINX_HOST}/privkey.pem:/etc/letsencrypt/live/${NGINX_HOST}/privkey.pem
     env_file:
-      - CyberCommons/dc_config/cybercom_config.env
+      - cybercommons/dc_config/cybercom_config.env
+      - ecopad_config.env
 
   cybercom_mongo:
     image: mongo:${MONGO_VERSION}
     command: --tlsMode requireTLS --tlsCertificateKeyFile /ssl/server/mongodb.pem --tlsCAFile /ssl/testca/cacert.pem --auth
     restart: unless-stopped
     env_file:
-      - CyberCommons/dc_config/cybercom_config.env
-      - CyberCommons/dc_config/secrets.env
+      - cybercommons/dc_config/cybercom_config.env
+      - cybercommons/dc_config/secrets.env
+      - ecopad_config.env
     expose:
       - 27017
     ports:
       - 27017:27017
     volumes:
       - mongodata:/data/db
-      - ./CyberCommons/dc_config/ssl/backend:/ssl
+      - ./cybercommons/dc_config/ssl/backend:/ssl
+
   cybercom_rabbitmq:
     image: rabbitmq:${RABBITMQ_VERSION}
     restart: unless-stopped
     env_file:
-      - CyberCommons/dc_config/cybercom_config.env
-      - CyberCommons/dc_config/secrets.env
+      - cybercommons/dc_config/cybercom_config.env
+      - cybercommons/dc_config/secrets.env
+      - ecopad_config.env
     volumes:
-      - ./CyberCommons/dc_config/ssl/backend:/ssl
+      - ./cybercommons/dc_config/ssl/backend:/ssl
     expose:
       - 5671
     ports:
@@ -65,25 +57,27 @@ services:
     image: memcached:${MEMCACHED_VERSION}
     restart: unless-stopped
     env_file:
-      - CyberCommons/dc_config/cybercom_config.env
+      - cybercommons/dc_config/cybercom_config.env
     expose:
       - 11211
+
   cybercom_celery:
     image: celeryapp
     restart: unless-stopped
     build: 
-      context: CyberCommons/dc_config/images/celery
+      context: cybercommons/dc_config/images/celery
       args:
         - DOCKER_PYTHON_VERSION
     volumes:
-      - ./CyberCommons/dc_config/ssl/backend:/ssl
+      - ./cybercommons/dc_config/ssl/backend:/ssl
     env_file:
-      - CyberCommons/dc_config/cybercom_config.env
-      - CyberCommons/dc_config/secrets.env
+      - cybercommons/dc_config/cybercom_config.env
+      - cybercommons/dc_config/secrets.env
+      - ecopad_config.env
     depends_on:
       - cybercom_mongo
       - cybercom_rabbitmq
-      - local_fortran_example
+
   cybercom_api:
     deploy:
       resources:
@@ -93,25 +87,30 @@ services:
     restart: unless-stopped
     user: "${UID}:${GID}"
     build:
-      context: CyberCommons # Jian: set the folder path for the Dockerfile of CyberCommon.
+      context: cybercommons
       args:
         UNAME: apiuser
         UID: "${UID}"
         GID: "${GID}"
         DOCKER_PYTHON_VERSION:
     env_file:
-      - CyberCommons/dc_config/cybercom_config.env
-      - CyberCommons/dc_config/secrets.env
+      - cybercommons/dc_config/cybercom_config.env
+      - cybercommons/dc_config/secrets.env
+      - ecopad_config.env
+    environment:
+      - GITPOD_WORKSPACE_ID
+      - GITPOD_WORKSPACE_CLUSTER_HOST
+      - GITPOD_PORT
+      - ALLOWED_HOSTS
     volumes:
-      - ./CyberCommons/dc_config/ssl/backend:/ssl
-      - ./CyberCommons/db.sqlite3:/app/db.sqlite3
-      - ./CyberCommons/web/static:/app/static
+      - ./cybercommons/dc_config/ssl/backend:/ssl
+      - ./cybercommons/db.sqlite3:/app/db.sqlite3
+      - ./cybercommons/web/static:/app/static
     expose:
       - 8080
     depends_on:
       - cybercom_mongo
       - cybercom_rabbitmq
-  
 volumes:
   mongodata:
     name: "${MONGO_DOCKER_VOLUME_PREFIX}_mongo"

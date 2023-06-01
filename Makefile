@@ -1,6 +1,6 @@
-cyberpath = CyberCommons/# Jian: set the folder path for cybercommon. 			
+cyberpath = cybercommons/# Jian: set the cybercommons path and modify the following relative paths based on it.
 
-$(cyberpath)dc_config/secrets.env:# Jian: This will run the following code, which cp the secrets.env file.
+$(cyberpath)dc_config/secrets.env:
 # Creating secrets file for editing
 ifndef EDITOR
 ifeq ($(strip $(shell which nano)),)
@@ -10,12 +10,11 @@ endif
 	@cp $(cyberpath)dc_config/secrets_template.env $(cyberpath)dc_config/secrets.env
 	@$${EDITOR:-nano} $(cyberpath)dc_config/secrets.env
 
-# Jian: call the relative settings.
+
 include $(cyberpath)dc_config/cybercom_config.env
 include $(cyberpath)dc_config/secrets.env
-# Jian: add for ecopad config env file
+# Jian: put the new settings in the ecopad.env, rather than modifying in the file of cybercommon.
 include ecopad_config.env
-
 
 # Set GITPOD_PORT to 8080 if run in gitpod
 ifneq ($(strip $(GITPOD_WORKSPACE_ID)),)
@@ -122,4 +121,4 @@ restart_api:
 
 collectstatic: 
 	@mkdir -p web/static
-	@$(COMPOSE) run --rm cybercom_api ./$(cyberpath)manage.py collectstatic --noinput
+	@$(COMPOSE) run --rm cybercom_api ./manage.py collectstatic --noinput
