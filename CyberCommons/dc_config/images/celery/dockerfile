@@ -1,8 +1,23 @@
 # ARG DOCKER_PYTHON_VERSION=3.9-slim-bullseye
-ARG DOCKER_PYTHON_VERSION=3.9.16-slim-buster
+ARG DOCKER_PYTHON_VERSION=3.9-slim-buster
 FROM python:$DOCKER_PYTHON_VERSION
 
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 PYTHONUNBUFFERED=1 
+
+# RUN sh -c 'echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ buster main" > /etc/apt/sources.list'
+# RUN sh -c 'echo "deb https://deb.debian.org/debian/ buster main" >> /etc/apt/sources.list'
+# RUN sh -c 'echo "deb https://mirrors.aliyun.com/debian/ buster main" > /etc/apt/sources.list'
+RUN sh -c 'echo "deb https://mirrors.ustc.edu.cn/debian/ buster main" > /etc/apt/sources.list'
+
+# RUN sh -c 'echo "deb https://deb.debian.org/debian/ buster main" >> /etc/apt/sources.list'
+# RUN sh -c 'echo "deb http://archive.ubuntu.com/ubuntu/debian/ buster main" >> /etc/apt/sources.list'
+# RUN sh -c 'echo "deb https://mirrors.ubuntu.com/debian/ buster main" >> /etc/apt/sources.list'
+# RUN sh -c 'echo "deb http://mirror.centos.org/debian/ buster main" >> /etc/apt/sources.list'
+# RUN sh -c 'echo "deb https://dl.fedoraproject.org/pub/debian/ buster main" >> /etc/apt/sources.list'
+
+RUN apt-get update -o Acquire::http::No-Cache=True -o Acquire::BrokenProxy=true
+
+RUN apt-get --fix-broken install -y libtiff-dev libc6-dev
 
 RUN apt-get update && apt-get install -y \
     git \
@@ -16,9 +31,9 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /   
 COPY requirements.txt ./  
-RUN python -m pip install --no-cache-dir --upgrade pip setuptools
-RUN python -m pip install --no-cache-dir celery==5.2.7 
-RUN python -m pip install --no-cache-dir pymongo==3.12.3
+RUN python -m pip install --no-cache-dir --upgrade pip setuptools -i https://pypi.tuna.tsinghua.edu.cn/simple
+RUN python -m pip install --no-cache-dir celery==5.2.7  -i https://pypi.tuna.tsinghua.edu.cn/simple
+RUN python -m pip install --no-cache-dir pymongo==3.12.3 -i https://pypi.tuna.tsinghua.edu.cn/simple
 RUN rm requirements.txt  
 
 COPY . /app  

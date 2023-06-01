@@ -3,7 +3,7 @@ services:
   local_fortran_example:
     image: local_fortran_example
     volumes:
-      - ./web/data:/data
+      - ./CyberCommons/web/data:/data
     build:
         context: local_fortran_example
         args: 
@@ -20,16 +20,18 @@ services:
       - 80
       - 443
     ports:
-      - ${GITPOD_PORT:-80}:80
+      - 80:80
       - 443:443
     depends_on:
       - cybercom_api
     volumes:
       - ./CyberCommons/dc_config/nginx/templates/${NGINX_TEMPLATE:-default}:/etc/nginx/templates/
       - ./CyberCommons/web:/usr/share/nginx/html
-      - ./CyberCommons/dc_config/ssl/nginx/letsencrypt/etc/live/${NGINX_HOST}/fullchain.pem:/etc/letsencrypt/live/${NGINX_HOST}/fullchain.pem
+      # - ./CyberCommons/dc_config/ssl/nginx/letsencrypt/etc/live/${NGINX_HOST}/fullchain.pem:/etc/letsencrypt/live/${NGINX_HOST}/fullchain.pem
+      - ./CyberCommons/dc_config/ssl/nginx/letsencrypt_cornell/etc/live/${NGINX_HOST}/fullchain.pem:/etc/letsencrypt/live/${NGINX_HOST}/fullchain.pem
       - ./CyberCommons/dc_config/ssl/backend/dhparam-2048.pem:/etc/ssl/certs/dhparam-2048.pem
-      - ./CyberCommons/dc_config/ssl/nginx/letsencrypt/etc/live/${NGINX_HOST}/privkey.pem:/etc/letsencrypt/live/${NGINX_HOST}/privkey.pem
+      # - ./CyberCommons/dc_config/ssl/nginx/letsencrypt/etc/live/${NGINX_HOST}/privkey.pem:/etc/letsencrypt/live/${NGINX_HOST}/privkey.pem
+      - ./CyberCommons/dc_config/ssl/nginx/letsencrypt_cornell/etc/live/${NGINX_HOST}/privkey.pem:/etc/letsencrypt/live/${NGINX_HOST}/privkey.pem
     env_file:
       - CyberCommons/dc_config/cybercom_config.env
 
@@ -81,6 +83,7 @@ services:
     depends_on:
       - cybercom_mongo
       - cybercom_rabbitmq
+      - local_fortran_example
   cybercom_api:
     deploy:
       resources:
@@ -99,11 +102,6 @@ services:
     env_file:
       - CyberCommons/dc_config/cybercom_config.env
       - CyberCommons/dc_config/secrets.env
-    environment:
-      - GITPOD_WORKSPACE_ID
-      - GITPOD_WORKSPACE_CLUSTER_HOST
-      - GITPOD_PORT
-      - ALLOWED_HOSTS
     volumes:
       - ./CyberCommons/dc_config/ssl/backend:/ssl
       - ./CyberCommons/db.sqlite3:/app/db.sqlite3

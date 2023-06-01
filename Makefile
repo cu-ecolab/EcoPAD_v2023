@@ -16,6 +16,7 @@ include $(cyberpath)dc_config/secrets.env
 # Jian: add for ecopad config env file
 include ecopad_config.env
 
+
 # Set GITPOD_PORT to 8080 if run in gitpod
 ifneq ($(strip $(GITPOD_WORKSPACE_ID)),)
 	GITPOD_PORT = 8080
