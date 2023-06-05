@@ -30,7 +30,7 @@ endif
 
 COMPOSE_INIT = $(COMPOSE) -f $(cyberpath)dc_config/images/docker-compose-init.yml
 CERTBOT_INIT = $(COMPOSE) -f $(cyberpath)dc_config/images/certbot-initialization.yml
-DJANGO_MANAGE = $(COMPOSE) run --rm cybercom_api ./$(cyberpath)manage.py
+DJANGO_MANAGE = $(COMPOSE) run --rm cybercom_api ./manage.py
 
 SHELL = /bin/bash
 

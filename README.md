@@ -15,6 +15,15 @@ EcoPAD is consist of **CyberCommons framework** and specific functions of **ecop
 
 # Modification:  
 
+## 2023.06.02
+**startCeleryWorker.py needs to modify the source of url for installing by "pip". Otherwise, celeryapp can not run.**  
+
+modify the url path in the ecopad_portal.  
+**Problem**: "s://ecopad.cals.cornell.edu/ecopad_portal/' was loaded over HTTPS, but requested an insecure XMLHttpRequest endpoint 'http://ecopad.cals.cornell.edu/api/queue/run/ecopadq.tasks.tasks.test_run_simulation/'. This request has been blocked; the content must be served over HTTPS."  
+**Solution**: add "<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">" to index.html.  
+**Problem**: "ecopadq.tasks.tasks.test_run_simulation Task is not available"(check api container)  
+**Solution**: "..."
+
 ## 2023.06.01
 To make the EcoPAD more independent, I move the new settings out from the cybercommon, so that we can do some modifications without considering the settings of cybercommon. But there are still some places that needs to be modifyed in cybercommon:  
     
