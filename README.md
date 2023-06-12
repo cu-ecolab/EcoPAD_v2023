@@ -16,7 +16,7 @@ EcoPAD is consist of **CyberCommons framework** and specific functions of **ecop
 # Modification:  
 
 ## 2023.06.12  
-**modify the name from EcoPAD_v2023 to "ecopad_cybercommon"**  
+**modify the name from EcoPAD_v2023 to "ecopad_v2023"**  
 ecopad_cybercommon
 1. cybercommon  
 2. ecopad_website  
