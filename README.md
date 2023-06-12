@@ -15,6 +15,13 @@ EcoPAD is consist of **CyberCommons framework** and specific functions of **ecop
 
 # Modification:  
 
+## 2023.06.12  
+**modify the name from EcoPAD_v2023 to "ecopad_cybercommon"**  
+ecopad_cybercommon
+1. cybercommon  
+2. ecopad_website  
+3. other settings
+
 ## 2023.06.02
 **startCeleryWorker.py needs to modify the source of url for installing by "pip". Otherwise, celeryapp can not run.**  
 
