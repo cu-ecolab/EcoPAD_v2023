@@ -15,6 +15,11 @@ EcoPAD is consist of **CyberCommons framework** and specific functions of **ecop
 
 # Modification:  
 
+## 2023.06.24
+failed to solve: failed to compute cache key: failed to calculate checksum of ref moby::lze9ndu38y3sdmc3nmb2am51y: "/output": not found
+make: *** [Makefile:105: build] Error 17  
+solution: build a **output** folder in spruce_site.
+
 ## 2023.06.12  
 **modify the name from EcoPAD_v2023 to "ecopad_v2023"**  
 ecopad_cybercommon

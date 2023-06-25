@@ -10,7 +10,7 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 PYTHONUNBUFFERED=1
 WORKDIR /
 COPY requirements.txt ./
 RUN python -m pip install --no-cache-dir --upgrade pip \
-  && python -m pip install --no-cache-dir -r requirements.txt --index-url https://pypi.tuna.tsinghua.edu.cn/simple\
+  && python -m pip install --no-cache-dir -r requirements.txt --index-url https://pypi.tuna.tsinghua.edu.cn/simple \
   && rm requirements.txt
 
 COPY . /app
